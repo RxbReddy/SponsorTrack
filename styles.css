@@ -61,7 +61,7 @@ html, body {
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-primary);
     font-weight: 600;
-    letter-spacing: -0.02em;
+    letter-spacing: 0;
 }
 
 /* Custom Scrollbar */
@@ -101,6 +101,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 1.5rem;
 }
 
 .logo-section {
@@ -148,6 +149,56 @@ header {
     border-bottom: 2px solid var(--accent);
     border-radius: 8px 8px 0 0;
     background: rgba(99, 102, 241, 0.05);
+}
+
+.auth-controls {
+    display: flex;
+    align-items: center;
+    min-width: fit-content;
+}
+
+.btn-signin,
+.user-chip {
+    border: 1px solid var(--card-border);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    min-height: 38px;
+    border-radius: 8px;
+    padding: 0.5rem 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.btn-signin:hover {
+    border-color: var(--accent);
+    color: white;
+}
+
+.user-chip {
+    cursor: default;
+    max-width: 260px;
+}
+
+.user-chip span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.user-chip button {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0.25rem;
+}
+
+.user-chip button:hover {
+    color: var(--danger);
 }
 
 /* Page Containers */
@@ -509,6 +560,7 @@ main {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 1rem;
 }
 
 .verification-strip {
@@ -565,12 +617,58 @@ main {
     font-size: 0.85rem;
     cursor: pointer;
     transition: var(--transition-smooth);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
 }
 
 .btn-secondary:hover {
     background: var(--accent);
     color: white;
     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+}
+
+.card-action-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-jobs {
+    text-decoration: none;
+    border-color: rgba(16, 185, 129, 0.45);
+    color: var(--success);
+}
+
+.btn-jobs:hover {
+    background: var(--success);
+    border-color: var(--success);
+}
+
+.btn-apply {
+    background: transparent;
+    border: 1px solid rgba(245, 158, 11, 0.45);
+    color: var(--warning);
+    padding: 0.5rem 0.9rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+}
+
+.btn-apply:hover,
+.btn-apply.active {
+    background: var(--warning);
+    border-color: var(--warning);
+    color: #111827;
 }
 
 .btn-bookmark {
@@ -713,6 +811,81 @@ td {
 }
 
 /* ==========================================================================
+   Saved Workspace & Auth Modal
+   ========================================================================== */
+.saved-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.saved-header h2 {
+    font-size: 2rem;
+}
+
+.saved-header p {
+    color: var(--text-secondary);
+    margin-top: 0.4rem;
+}
+
+.saved-lists {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+.section-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.section-title-row h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.section-title-row span {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--card-border);
+    color: var(--text-secondary);
+    min-width: 34px;
+    height: 28px;
+    padding: 0 0.6rem;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+.auth-modal-container {
+    max-width: 460px;
+}
+
+.signin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+}
+
+.signin-form label {
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.signin-status {
+    margin-top: 1rem;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+/* ==========================================================================
    Eligibility Checker & Guides View
    ========================================================================== */
 .guide-card {
@@ -843,6 +1016,27 @@ td {
 
 /* Responsive Adjustments */
 @media(max-width: 900px) {
+    .header-container {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .auth-controls,
+    .user-chip,
+    .btn-signin {
+        width: 100%;
+    }
+
+    .btn-signin,
+    .user-chip {
+        justify-content: center;
+    }
+
     .dashboard-grid {
         grid-template-columns: 1fr;
     }
@@ -863,5 +1057,24 @@ td {
     
     .hero-title {
         font-size: 2.25rem;
+    }
+
+    .employer-actions,
+    .verification-strip,
+    .card-action-buttons,
+    .saved-header {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .card-action-buttons > *,
+    .saved-header .btn-primary {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .employer-stats {
+        grid-template-columns: 1fr;
     }
 }

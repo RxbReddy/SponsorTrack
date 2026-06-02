@@ -8,9 +8,10 @@ Description: Services dynamic SQL querying over SQLite for company listings,
 
 import os
 import sqlite3
-from typing import Optional
+from typing import Literal, Optional
 from fastapi import FastAPI, HTTPException, Query, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, EmailStr, Field
 
 # Define paths
@@ -46,11 +47,66 @@ class SignupResponse(BaseModel):
     status: str
     message: str
 
+class ProfileRequest(BaseModel):
+    email: EmailStr = Field(..., description="Email address used for lightweight sign-in")
+
+class CompanyListRequest(ProfileRequest):
+    company_name: str = Field(..., min_length=1, description="Employer name to save")
+    list_type: Literal["favorite", "applying"] = Field(..., description="User company list bucket")
+    action: Literal["add", "remove"] = Field("add", description="Whether to add or remove the company")
+
 # Helper to establish db connections
 def get_db_connection():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
+
+def normalize_email(email: str) -> str:
+    return email.lower().strip()
+
+def ensure_profile_tables():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS user_company_lists (
+            email TEXT NOT NULL,
+            company_name TEXT NOT NULL,
+            list_type TEXT NOT NULL CHECK (list_type IN ('favorite', 'applying')),
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (email, company_name, list_type)
+        )
+    """)
+    conn.commit()
+    conn.close()
+
+def ensure_user_record(email: str):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT OR IGNORE INTO users (email, visa_status, target_role, target_state, experience_level)
+        VALUES (?, ?, ?, ?, ?)
+    """, (email, "Unspecified", "All Tech Roles", "All States", "All Levels"))
+    conn.commit()
+    conn.close()
+
+def get_profile_payload(email: str):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT company_name, list_type
+        FROM user_company_lists
+        WHERE email = ?
+        ORDER BY updated_at DESC, company_name ASC
+    """, (email,))
+    rows = cursor.fetchall()
+    conn.close()
+    return {
+        "email": email,
+        "favorites": [row["company_name"] for row in rows if row["list_type"] == "favorite"],
+        "applying": [row["company_name"] for row in rows if row["list_type"] == "applying"],
+    }
+
+ensure_profile_tables()
 
 # ==========================================================================
 # REST API Endpoints
@@ -201,17 +257,59 @@ def post_signup(req: SignupRequest):
             "message": "Thank you for joining! You have been successfully registered for visa job alerts."
         }
     except sqlite3.IntegrityError:
+        cursor.execute("""
+            UPDATE users
+            SET visa_status = ?, target_role = ?, target_state = ?, experience_level = ?
+            WHERE email = ?
+        """, (req.visa_status, req.target_role, req.target_state, req.experience_level, req.email.lower().strip()))
+        conn.commit()
         conn.close()
-        # Handle duplicate email signups gracefully
         return {
-            "status": "exists",
-            "message": "This email is already registered! We will keep you updated on new visa opportunities."
+            "status": "success",
+            "message": "Your visa job alert preferences have been updated."
         }
     except Exception as e:
         conn.close()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Internal database write error: {str(e)}"
+        )
+
+@app.post("/api/profile")
+def post_profile(req: ProfileRequest):
+    email = normalize_email(req.email)
+    ensure_user_record(email)
+    return get_profile_payload(email)
+
+@app.post("/api/profile/company")
+def post_profile_company(req: CompanyListRequest):
+    email = normalize_email(req.email)
+    company_name = req.company_name.strip()
+    ensure_user_record(email)
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        if req.action == "remove":
+            cursor.execute("""
+                DELETE FROM user_company_lists
+                WHERE email = ? AND company_name = ? AND list_type = ?
+            """, (email, company_name, req.list_type))
+        else:
+            cursor.execute("""
+                INSERT INTO user_company_lists (email, company_name, list_type, updated_at)
+                VALUES (?, ?, ?, CURRENT_TIMESTAMP)
+                ON CONFLICT(email, company_name, list_type)
+                DO UPDATE SET updated_at = CURRENT_TIMESTAMP
+            """, (email, company_name, req.list_type))
+        conn.commit()
+        conn.close()
+        return get_profile_payload(email)
+    except Exception as e:
+        conn.close()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Profile update error: {str(e)}"
         )
 
 @app.get("/api/users")
@@ -230,3 +328,18 @@ def get_users():
     except Exception as e:
         conn.close()
         return []
+
+@app.get("/", include_in_schema=False)
+def serve_index():
+    return FileResponse(os.path.join(BASE_DIR, "index.html"))
+
+@app.get("/{path:path}", include_in_schema=False)
+def serve_frontend_asset(path: str):
+    if path.startswith("api/"):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+
+    allowed_assets = {"index.html", "app.js", "data.js", "styles.css"}
+    if path in allowed_assets:
+        return FileResponse(os.path.join(BASE_DIR, path))
+
+    return FileResponse(os.path.join(BASE_DIR, "index.html"))

@@ -28,6 +28,17 @@
                     <li class="nav-item" data-target="guide-view"><a href="#"><i class="fa-solid fa-book-open"></i> Visa Path Guide</a></li>
                 </ul>
             </nav>
+            <div class="auth-controls">
+                <button class="btn-signin" id="signin-open-btn">
+                    <i class="fa-solid fa-user"></i>
+                    <span>Sign In</span>
+                </button>
+                <div class="user-chip hidden" id="user-chip">
+                    <i class="fa-solid fa-circle-user"></i>
+                    <span id="user-email-label"></span>
+                    <button id="signout-btn" aria-label="Sign out"><i class="fa-solid fa-right-from-bracket"></i></button>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -257,11 +268,36 @@
 
         <!-- VIEW 3: SAVED EMPLOYERS VIEW -->
         <div id="saved-view" class="view-panel hidden">
-            <h2 class="text-center">Your Saved Employers & Bookmarks</h2>
-            <p class="text-center" style="color: var(--text-secondary); margin-bottom: 2rem;">Quickly monitor salaries, approval rates, and E-Verify status of employers you've saved.</p>
-            
-            <div class="results-grid" id="saved-employers-grid">
-                <!-- Dynamically filled by JS -->
+            <div class="saved-header">
+                <div>
+                    <h2>Your Employer Workspace</h2>
+                    <p>Track favorites, application targets, salaries, approval rates, and E-Verify status in one place.</p>
+                </div>
+                <button class="btn-primary" id="saved-signin-btn">
+                    <i class="fa-solid fa-user-check"></i> Sign In to Sync
+                </button>
+            </div>
+
+            <div class="saved-lists">
+                <section>
+                    <div class="section-title-row">
+                        <h3><i class="fa-solid fa-bookmark"></i> Favorites</h3>
+                        <span id="favorite-count">0</span>
+                    </div>
+                    <div class="results-grid" id="saved-favorites-grid">
+                        <!-- Dynamically filled by JS -->
+                    </div>
+                </section>
+
+                <section>
+                    <div class="section-title-row">
+                        <h3><i class="fa-solid fa-paper-plane"></i> Want to Apply</h3>
+                        <span id="applying-count">0</span>
+                    </div>
+                    <div class="results-grid" id="applying-employers-grid">
+                        <!-- Dynamically filled by JS -->
+                    </div>
+                </section>
             </div>
         </div>
 
@@ -361,6 +397,30 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+    </div>
+
+    <!-- Lightweight Sign-In Modal -->
+    <div class="modal-overlay" id="signin-modal">
+        <div class="modal-container auth-modal-container">
+            <div class="modal-header">
+                <div class="employer-identity">
+                    <h2>Sign In to SponsorTrack</h2>
+                    <div class="employer-meta">
+                        <span>Save favorites and application targets across visits.</span>
+                    </div>
+                </div>
+                <button class="modal-close" id="signin-close-btn">&times;</button>
+            </div>
+
+            <form id="signin-form" class="signin-form">
+                <label for="signin-email">Email address</label>
+                <input type="email" id="signin-email" required placeholder="you@example.com" class="filter-control">
+                <button type="submit" class="btn-primary">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i> Continue
+                </button>
+            </form>
+            <div id="signin-status" class="signin-status hidden"></div>
         </div>
     </div>
 

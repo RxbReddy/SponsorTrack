@@ -4,9 +4,123 @@
 
 // Configure Backend API Target Base
 // Default empty string for relative paths in local testing or specify the production API URL when deployed
-const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    ? 'http://127.0.0.1:8000'
-    : 'https://sponsortrack.onrender.com'; // Replace with public backend domain on deployment
+const API_BASE = (() => {
+    const host = window.location.hostname;
+    if (host === 'localhost' || host === '127.0.0.1') {
+        return window.location.origin;
+    }
+    if (host.endsWith('onrender.com')) {
+        return '';
+    }
+    return 'https://sponsortrack.onrender.com';
+})();
+
+const CAREER_PORTAL_URLS = {
+    "Abbott Laboratories": "https://www.jobs.abbott/",
+    "Accenture": "https://www.accenture.com/us-en/careers",
+    "Adobe": "https://careers.adobe.com/us/en",
+    "Airbnb": "https://careers.airbnb.com/",
+    "Amazon": "https://www.amazon.jobs/",
+    "American Express": "https://www.americanexpress.com/en-us/careers/",
+    "Apple": "https://jobs.apple.com/",
+    "Atlassian": "https://www.atlassian.com/company/careers",
+    "BCG": "https://careers.bcg.com/",
+    "Bain & Company": "https://www.bain.com/careers/",
+    "Bank Of America N.A.": "https://careers.bankofamerica.com/",
+    "Best Buy Co.": "https://jobs.bestbuy.com/",
+    "Blackrock Financial": "https://careers.blackrock.com/",
+    "Boeing": "https://jobs.boeing.com/",
+    "CVS Health": "https://jobs.cvshealth.com/",
+    "Capgemini": "https://www.capgemini.com/careers/",
+    "Capital One": "https://www.capitalonecareers.com/",
+    "Chevron": "https://careers.chevron.com/",
+    "Cisco": "https://jobs.cisco.com/",
+    "Citigroup": "https://jobs.citi.com/",
+    "Cognizant": "https://careers.cognizant.com/",
+    "Coinbase,": "https://www.coinbase.com/careers",
+    "Conagra Brands": "https://careers.conagrabrands.com/",
+    "Costco Wholesale": "https://www.costco.com/jobs.html",
+    "Datadog,": "https://careers.datadoghq.com/",
+    "Deloitte": "https://www.deloitte.com/us/en/careers.html",
+    "Discover Financial": "https://jobs.discover.com/",
+    "Dropbox,": "https://jobs.dropbox.com/",
+    "EY": "https://www.ey.com/en_us/careers",
+    "Ebay": "https://jobs.ebayinc.com/",
+    "Epic Systems": "https://careers.epic.com/",
+    "ExxonMobil": "https://jobs.exxonmobil.com/",
+    "FNBO (First National Bank)": "https://www.fnbo.com/careers/",
+    "Fidelity Brokerage": "https://jobs.fidelity.com/",
+    "Ford": "https://corporate.ford.com/careers.html",
+    "GE": "https://jobs.gecareers.com/",
+    "GM": "https://search-careers.gm.com/",
+    "Gallup": "https://www.gallup.com/careers/",
+    "Goldman Sachs": "https://www.goldmansachs.com/careers/",
+    "Google": "https://www.google.com/about/careers/applications/jobs/results/",
+    "HCL Technologies": "https://www.hcltech.com/careers",
+    "Hubspot,": "https://www.hubspot.com/careers",
+    "Infosys": "https://www.infosys.com/careers/",
+    "Intel": "https://jobs.intel.com/",
+    "JPMorgan Chase": "https://careers.jpmorgan.com/",
+    "Johnson & Johnson": "https://www.careers.jnj.com/",
+    "KPMG": "https://kpmg.com/us/en/careers.html",
+    "Kiewit": "https://kiewitcareers.kiewit.com/",
+    "LTIMindtree": "https://www.ltimindtree.com/careers/",
+    "Linkedin": "https://careers.linkedin.com/",
+    "Lockheed Martin": "https://www.lockheedmartinjobs.com/",
+    "Lyft,": "https://www.lyft.com/careers",
+    "Mastercard International": "https://careers.mastercard.com/",
+    "Mayo Clinic": "https://jobs.mayoclinic.org/",
+    "McKinsey": "https://www.mckinsey.com/careers/search-jobs",
+    "Merck": "https://jobs.merck.com/",
+    "Meta": "https://www.metacareers.com/jobs/",
+    "Microsoft": "https://jobs.careers.microsoft.com/",
+    "Morgan Stanley": "https://www.morganstanley.com/people-opportunities/careers",
+    "Mutual of Omaha": "https://www.mutualofomaha.com/careers",
+    "NVIDIA": "https://www.nvidia.com/en-us/about-nvidia/careers/",
+    "Nelnet": "https://nelnetinc.com/careers/",
+    "Netflix": "https://jobs.netflix.com/",
+    "Nike,": "https://jobs.nike.com/",
+    "Northrop Grumman": "https://www.northropgrumman.com/jobs",
+    "Oracle": "https://www.oracle.com/careers/",
+    "Palantir Technologies": "https://www.palantir.com/careers/",
+    "Paypal,": "https://paypal.eightfold.ai/careers",
+    "Pepsico,": "https://www.pepsicojobs.com/",
+    "Pfizer": "https://www.pfizer.com/about/careers",
+    "Physicians Mutual": "https://www.physiciansmutual.com/cs/careers",
+    "Pinterest,": "https://www.pinterestcareers.com/",
+    "Procter & Gamble": "https://www.pgcareers.com/",
+    "PwC": "https://www.pwc.com/us/en/careers.html",
+    "Roblox": "https://careers.roblox.com/",
+    "Salesforce": "https://careers.salesforce.com/",
+    "Servicenow": "https://careers.servicenow.com/",
+    "Slack Technologies": "https://slack.com/careers",
+    "Snap": "https://careers.snap.com/",
+    "Snowflake": "https://careers.snowflake.com/",
+    "SpaceX": "https://www.spacex.com/careers/",
+    "Splunk": "https://www.splunk.com/en_us/careers.html",
+    "Square (Block)": "https://block.xyz/careers",
+    "Starbucks": "https://www.starbucks.com/careers/",
+    "Stripe": "https://stripe.com/jobs",
+    "TCS": "https://www.tcs.com/careers",
+    "TD Ameritrade": "https://www.schwabjobs.com/",
+    "Target": "https://corporate.target.com/careers",
+    "Tech Mahindra": "https://www.techmahindra.com/en-in/careers/",
+    "Tesla": "https://www.tesla.com/careers",
+    "The Coca-Cola Company": "https://www.coca-colacompany.com/careers",
+    "The Home Depot": "https://careers.homedepot.com/",
+    "Twitter/X": "https://careers.x.com/",
+    "Uber": "https://www.uber.com/us/en/careers/",
+    "Union Pacific": "https://up.jobs/",
+    "UnitedHealth Group": "https://careers.unitedhealthgroup.com/",
+    "Visa U.S.A.": "https://corporate.visa.com/en/jobs.html",
+    "Vmware": "https://careers.broadcom.com/",
+    "Walmart": "https://careers.walmart.com/",
+    "Wells Fargo Bank": "https://www.wellsfargojobs.com/",
+    "Werner Enterprises": "https://www.werner.com/careers/",
+    "Wipro": "https://careers.wipro.com/",
+    "Workday,": "https://workday.wd5.myworkdayjobs.com/Workday",
+    "Zoom Video Communications": "https://careers.zoom.us/"
+};
 
 // Application State
 const state = {
@@ -19,8 +133,10 @@ const state = {
         grade: ''
     },
     bookmarkedCompanies: new Set(),
+    applyingCompanies: new Set(),
     activeTab: 'search-view',
     chartInstance: null,
+    userEmail: '',
     currentCompanies: [] // stores active dynamic query results
 };
 
@@ -64,15 +180,9 @@ let wizardAnswers = {};
 // Initialization & Event Listeners
 // ==========================================================================
 document.addEventListener("DOMContentLoaded", () => {
-    // Load Bookmarks from LocalStorage
-    const saved = localStorage.getItem("sponsortrack_bookmarks");
-    if (saved) {
-        try {
-            JSON.parse(saved).forEach(item => state.bookmarkedCompanies.add(item));
-        } catch (e) {
-            console.error("Error loading bookmarks", e);
-        }
-    }
+    state.userEmail = localStorage.getItem("sponsortrack_user_email") || "";
+    loadUserLists();
+    updateAuthUI();
 
     // Bind Nav Menu Tabs
     document.querySelectorAll(".nav-item").forEach(item => {
@@ -145,6 +255,18 @@ document.addEventListener("DOMContentLoaded", () => {
     // Wizard Reset Button
     document.getElementById("wizard-reset-btn").addEventListener("click", restartWizard);
 
+    // Lightweight sign-in controls
+    document.getElementById("signin-open-btn").addEventListener("click", openSignInModal);
+    document.getElementById("saved-signin-btn").addEventListener("click", openSignInModal);
+    document.getElementById("signin-close-btn").addEventListener("click", closeSignInModal);
+    document.getElementById("signin-modal").addEventListener("click", (e) => {
+        if (e.target === document.getElementById("signin-modal")) {
+            closeSignInModal();
+        }
+    });
+    document.getElementById("signout-btn").addEventListener("click", signOut);
+    document.getElementById("signin-form").addEventListener("submit", handleSignIn);
+
     // Bind Community Signup Form
     const signupForm = document.getElementById("signup-form");
     if (signupForm) {
@@ -211,7 +333,182 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Initial Render
     applyFiltersAndRender();
+    if (state.userEmail) {
+        syncProfileFromApi(true);
+    }
 });
+
+// ==========================================================================
+// Profile, Persistence & Career Links
+// ==========================================================================
+function getStorageScope() {
+    return state.userEmail || "guest";
+}
+
+function getStorageKey(bucket) {
+    return `sponsortrack_${getStorageScope()}_${bucket}`;
+}
+
+function readStoredSet(key) {
+    const stored = localStorage.getItem(key);
+    if (!stored) return new Set();
+    try {
+        return new Set(JSON.parse(stored));
+    } catch (e) {
+        console.error("Unable to parse saved list", key, e);
+        return new Set();
+    }
+}
+
+function loadUserLists() {
+    state.bookmarkedCompanies = readStoredSet(getStorageKey("favorites"));
+    state.applyingCompanies = readStoredSet(getStorageKey("applying"));
+
+    const legacyBookmarks = localStorage.getItem("sponsortrack_bookmarks");
+    if (legacyBookmarks && state.bookmarkedCompanies.size === 0) {
+        try {
+            JSON.parse(legacyBookmarks).forEach(item => state.bookmarkedCompanies.add(item));
+            persistUserLists();
+        } catch (e) {
+            console.error("Error migrating legacy bookmarks", e);
+        }
+    }
+}
+
+function persistUserLists() {
+    localStorage.setItem(getStorageKey("favorites"), JSON.stringify(Array.from(state.bookmarkedCompanies)));
+    localStorage.setItem(getStorageKey("applying"), JSON.stringify(Array.from(state.applyingCompanies)));
+    localStorage.setItem("sponsortrack_bookmarks", JSON.stringify(Array.from(state.bookmarkedCompanies)));
+}
+
+function updateAuthUI() {
+    const signedIn = Boolean(state.userEmail);
+    document.getElementById("signin-open-btn").classList.toggle("hidden", signedIn);
+    document.getElementById("user-chip").classList.toggle("hidden", !signedIn);
+    document.getElementById("user-email-label").textContent = state.userEmail;
+    document.getElementById("saved-signin-btn").classList.toggle("hidden", signedIn);
+}
+
+function openSignInModal() {
+    const modal = document.getElementById("signin-modal");
+    document.getElementById("signin-email").value = state.userEmail;
+    document.getElementById("signin-status").classList.add("hidden");
+    modal.classList.add("active");
+    setTimeout(() => document.getElementById("signin-email").focus(), 0);
+}
+
+function closeSignInModal() {
+    document.getElementById("signin-modal").classList.remove("active");
+}
+
+async function handleSignIn(e) {
+    e.preventDefault();
+    const email = document.getElementById("signin-email").value.trim().toLowerCase();
+    if (!email) return;
+
+    const currentFavorites = new Set(state.bookmarkedCompanies);
+    const currentApplying = new Set(state.applyingCompanies);
+    state.userEmail = email;
+    localStorage.setItem("sponsortrack_user_email", email);
+
+    loadUserLists();
+    currentFavorites.forEach(name => state.bookmarkedCompanies.add(name));
+    currentApplying.forEach(name => state.applyingCompanies.add(name));
+    persistUserLists();
+    updateAuthUI();
+    closeSignInModal();
+    applyFiltersAndRender();
+    syncProfileFromApi(true);
+}
+
+function signOut() {
+    state.userEmail = "";
+    localStorage.removeItem("sponsortrack_user_email");
+    loadUserLists();
+    updateAuthUI();
+    applyFiltersAndRender();
+    if (state.activeTab === "saved-view") {
+        renderSavedCompanies();
+    }
+}
+
+async function syncProfileFromApi(pushLocalAfterMerge = false) {
+    if (!state.userEmail) return;
+    try {
+        const response = await fetch(`${API_BASE}/api/profile`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: state.userEmail })
+        });
+        if (!response.ok) throw new Error("Profile sync failed");
+        const profile = await response.json();
+        (profile.favorites || []).forEach(name => state.bookmarkedCompanies.add(name));
+        (profile.applying || []).forEach(name => state.applyingCompanies.add(name));
+        persistUserLists();
+        if (pushLocalAfterMerge) {
+            await pushAllPreferencesToApi();
+        }
+        applyFiltersAndRender();
+    } catch (error) {
+        console.warn("Profile API unavailable. Lists remain saved in this browser.", error);
+    }
+}
+
+async function pushAllPreferencesToApi() {
+    if (!state.userEmail) return;
+    const updates = [];
+    state.bookmarkedCompanies.forEach(name => updates.push(syncCompanyPreference(name, "favorite", true)));
+    state.applyingCompanies.forEach(name => updates.push(syncCompanyPreference(name, "applying", true)));
+    await Promise.all(updates);
+}
+
+async function syncCompanyPreference(name, listType, isActive) {
+    if (!state.userEmail) return;
+    try {
+        await fetch(`${API_BASE}/api/profile/company`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                email: state.userEmail,
+                company_name: name,
+                list_type: listType,
+                action: isActive ? "add" : "remove"
+            })
+        });
+    } catch (error) {
+        console.warn("Unable to sync company preference; local copy is saved.", error);
+    }
+}
+
+function getCareerUrl(company) {
+    const normalizedName = company.name.trim();
+    return CAREER_PORTAL_URLS[normalizedName] || `https://www.google.com/search?q=${encodeURIComponent(`${normalizedName} careers jobs official`)}`;
+}
+
+function escapeHtml(value) {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function findCompanyByName(name) {
+    const activeMatch = state.currentCompanies.find(c => c.name === name);
+    if (activeMatch) return activeMatch;
+    if (typeof SPONSOR_DATA !== 'undefined') {
+        return SPONSOR_DATA.find(c => c.name === name);
+    }
+    return null;
+}
+
+function getCompaniesForNames(nameSet) {
+    return Array.from(nameSet)
+        .map(findCompanyByName)
+        .filter(Boolean)
+        .sort((a, b) => b.total_lca - a.total_lca);
+}
 
 // ==========================================================================
 // View Routing System
@@ -320,8 +617,8 @@ async function applyFiltersAndRender() {
 // ==========================================================================
 // Render Layout Cards & Tables
 // ==========================================================================
-function renderResultsGrid(companies) {
-    const container = document.getElementById("employer-results");
+function renderResultsGrid(companies, containerId = "employer-results") {
+    const container = document.getElementById(containerId);
     container.innerHTML = "";
 
     if (companies.length === 0) {
@@ -337,6 +634,7 @@ function renderResultsGrid(companies) {
 
     companies.forEach(company => {
         const isBookmarked = state.bookmarkedCompanies.has(company.name);
+        const isApplying = state.applyingCompanies.has(company.name);
         const card = document.createElement("div");
         card.className = "employer-card";
         
@@ -350,13 +648,13 @@ function renderResultsGrid(companies) {
         card.innerHTML = `
             <div class="employer-header">
                 <div class="employer-identity">
-                    <h3 class="employer-name">${company.name}</h3>
+                    <h3 class="employer-name">${escapeHtml(company.name)}</h3>
                     <div class="employer-meta">
-                        <span class="tag">${company.industry}</span>
+                        <span class="tag">${escapeHtml(company.industry)}</span>
                         <span>${company.everify ? 'E-Verify' : 'Non-E-Verify'}</span>
                     </div>
                 </div>
-                <div class="grade-badge ${gradeClass}">${company.grade}</div>
+                <div class="grade-badge ${gradeClass}">${escapeHtml(company.grade)}</div>
             </div>
             
             <div class="employer-stats">
@@ -387,11 +685,18 @@ function renderResultsGrid(companies) {
                         <i class="fa-solid fa-circle-xmark"></i> No E-Verify
                     </span>`}
                 </div>
-                <div style="display: flex; align-items: center;">
-                    <button class="btn-bookmark ${isBookmarked ? 'bookmarked' : ''}" data-name="${company.name}">
+                <div class="card-action-buttons">
+                    <a class="btn-secondary btn-jobs" href="${getCareerUrl(company)}" target="_blank" rel="noopener noreferrer">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> Explore Jobs
+                    </a>
+                    <button class="btn-apply ${isApplying ? 'active' : ''}" data-name="${escapeHtml(company.name)}">
+                        <i class="fa-${isApplying ? 'solid' : 'regular'} fa-paper-plane"></i>
+                        ${isApplying ? 'Applying' : 'Want to Apply'}
+                    </button>
+                    <button class="btn-bookmark ${isBookmarked ? 'bookmarked' : ''}" data-name="${escapeHtml(company.name)}" aria-label="Save favorite">
                         <i class="fa-${isBookmarked ? 'solid' : 'regular'} fa-bookmark"></i>
                     </button>
-                    <button class="btn-secondary" onclick="openEmployerModal('${company.name}')">View Breakdown</button>
+                    <button class="btn-secondary btn-details" data-name="${escapeHtml(company.name)}">View Breakdown</button>
                 </div>
             </div>
         `;
@@ -403,11 +708,22 @@ function renderResultsGrid(companies) {
             toggleBookmark(name, btn);
         });
 
+        card.querySelector(".btn-apply").addEventListener("click", (e) => {
+            const btn = e.currentTarget;
+            const name = btn.getAttribute("data-name");
+            toggleApplying(name, btn);
+        });
+
+        card.querySelector(".btn-details").addEventListener("click", (e) => {
+            openEmployerModal(e.currentTarget.getAttribute("data-name"));
+        });
+
         container.appendChild(card);
     });
 }
 
 function toggleBookmark(name, btn) {
+    let isActive = false;
     if (state.bookmarkedCompanies.has(name)) {
         state.bookmarkedCompanies.delete(name);
         btn.classList.remove("bookmarked");
@@ -416,47 +732,72 @@ function toggleBookmark(name, btn) {
         state.bookmarkedCompanies.add(name);
         btn.classList.add("bookmarked");
         btn.querySelector("i").className = "fa-solid fa-bookmark";
+        isActive = true;
     }
     
-    // Save to LocalStorage
-    localStorage.setItem("sponsortrack_bookmarks", JSON.stringify(Array.from(state.bookmarkedCompanies)));
+    persistUserLists();
+    syncCompanyPreference(name, "favorite", isActive);
     
     if (state.activeTab === 'saved-view') {
         renderSavedCompanies();
     }
 }
 
-function renderSavedCompanies() {
-    const container = document.getElementById("saved-employers-grid");
-    container.innerHTML = "";
-
-    if (state.bookmarkedCompanies.size === 0) {
-        container.innerHTML = `
-            <div class="guide-card text-center" style="padding: 3rem; width: 100%;">
-                <i class="fa-solid fa-bookmark" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem;"></i>
-                <h3>No Bookmarked Employers</h3>
-                <p style="color: var(--text-secondary); margin-top: 0.5rem;">Click the bookmark icon on any employer card to save them here for quick access.</p>
-            </div>
-        `;
-        return;
+function toggleApplying(name, btn) {
+    let isActive = false;
+    if (state.applyingCompanies.has(name)) {
+        state.applyingCompanies.delete(name);
+        btn.classList.remove("active");
+        btn.querySelector("i").className = "fa-regular fa-paper-plane";
+        btn.lastChild.textContent = " Want to Apply";
+    } else {
+        state.applyingCompanies.add(name);
+        btn.classList.add("active");
+        btn.querySelector("i").className = "fa-solid fa-paper-plane";
+        btn.lastChild.textContent = " Applying";
+        isActive = true;
     }
 
-    const savedList = state.currentCompanies.filter(c => state.bookmarkedCompanies.has(c.name));
-    renderResultsGrid(savedList);
-    
-    // Hijack results grid injection to write into saved-employers-grid
-    const searchGrid = document.getElementById("employer-results");
-    container.innerHTML = searchGrid.innerHTML;
-    searchGrid.innerHTML = ""; // reset main search result container to avoid duplicate IDs
+    persistUserLists();
+    syncCompanyPreference(name, "applying", isActive);
 
-    // Re-bind click handlers for the newly cloned buttons
-    container.querySelectorAll(".btn-bookmark").forEach(btn => {
-        btn.addEventListener("click", (e) => {
-            const button = e.currentTarget;
-            const name = button.getAttribute("data-name");
-            toggleBookmark(name, button);
-        });
-    });
+    if (state.activeTab === 'saved-view') {
+        renderSavedCompanies();
+    }
+}
+
+function renderSavedCompanies() {
+    const favoritesGrid = document.getElementById("saved-favorites-grid");
+    const applyingGrid = document.getElementById("applying-employers-grid");
+    const favorites = getCompaniesForNames(state.bookmarkedCompanies);
+    const applying = getCompaniesForNames(state.applyingCompanies);
+
+    document.getElementById("favorite-count").textContent = favorites.length.toLocaleString();
+    document.getElementById("applying-count").textContent = applying.length.toLocaleString();
+
+    if (favorites.length === 0) {
+        favoritesGrid.innerHTML = `
+            <div class="guide-card text-center" style="padding: 3rem; width: 100%;">
+                <i class="fa-solid fa-bookmark" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem;"></i>
+                <h3>No Favorite Employers</h3>
+                <p style="color: var(--text-secondary); margin-top: 0.5rem;">Click the bookmark icon on any employer card to keep it here.</p>
+            </div>
+        `;
+    } else {
+        renderResultsGrid(favorites, "saved-favorites-grid");
+    }
+
+    if (applying.length === 0) {
+        applyingGrid.innerHTML = `
+            <div class="guide-card text-center" style="padding: 3rem; width: 100%;">
+                <i class="fa-solid fa-paper-plane" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem;"></i>
+                <h3>No Application Targets</h3>
+                <p style="color: var(--text-secondary); margin-top: 0.5rem;">Use Want to Apply to build a focused company list.</p>
+            </div>
+        `;
+    } else {
+        renderResultsGrid(applying, "applying-employers-grid");
+    }
 }
 
 function updateStatistics(companies) {
@@ -570,7 +911,7 @@ function updateAnalyticsChart(companies) {
 // Modal Handlers (Detail Table Rendering)
 // ==========================================================================
 function openEmployerModal(companyName) {
-    const company = state.currentCompanies.find(c => c.name === companyName);
+    const company = findCompanyByName(companyName);
     if (!company) return;
 
     document.getElementById("modal-company-name").textContent = company.name;

@@ -1,6 +1,7 @@
-sponsortrack.db
+#sponsortrack.db
 __pycache__/
 *.pyc
 .env
+.venv/
 *.log
 scratch/
