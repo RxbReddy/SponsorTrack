@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SponsorTrack | Visa & Career Navigation Platform</title>
+    <!-- CSS Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header>
+        <div class="header-container">
+            <div class="logo-section">
+                <i class="fa-solid fa-passport"></i>
+                SponsorTrack
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li class="nav-item active" data-target="search-view"><a href="#"><i class="fa-solid fa-magnifying-glass"></i> Search Sponsors</a></li>
+                    <li class="nav-item" data-target="checker-view"><a href="#"><i class="fa-solid fa-circle-check"></i> Eligibility Checker</a></li>
+                    <li class="nav-item" data-target="saved-view"><a href="#"><i class="fa-solid fa-bookmark"></i> Saved Employers</a></li>
+                    <li class="nav-item" data-target="guide-view"><a href="#"><i class="fa-solid fa-book-open"></i> Visa Path Guide</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-wrapper">
+            <h1 class="hero-title">Find Sponsoring Companies <span>For Your Visa</span></h1>
+            <p class="hero-subtitle">Verify E-Verify status and USCIS Labor Condition Application (LCA) historical filings to filter out fake listings and connect with active direct-hire employers.</p>
+            
+            <!-- Top Selector Tab: Visa Status -->
+            <div class="visa-selector">
+                <button class="visa-tab active" data-visa="h1b">
+                    H-1B Visa
+                    <span class="desc">Work Sponsorship</span>
+                </button>
+                <button class="visa-tab" data-visa="opt">
+                    OPT Student
+                    <span class="desc">F-1 Student 12m</span>
+                </button>
+                <button class="visa-tab" data-visa="stem_opt">
+                    STEM OPT
+                    <span class="desc">F-1 Extension 24m</span>
+                </button>
+                <button class="visa-tab" data-visa="citizen">
+                    US Citizen / GC
+                    <span class="desc">Permanent Resident</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- VIEW 1: SEARCH SPONSORS VIEW -->
+        <div id="search-view" class="view-panel">
+            <div class="dashboard-grid">
+                
+                <!-- Sidebar Filters -->
+                <aside class="filter-card">
+                    <h3>
+                        Filters 
+                        <button class="clear-btn" id="reset-filters-btn">Clear All</button>
+                    </h3>
+                    
+                    <!-- State Filter -->
+                    <div class="filter-group">
+                        <label for="filter-state">Target Work State</label>
+                        <select id="filter-state" class="filter-control">
+                            <option value="">All States</option>
+                            <option value="AL">Alabama (AL)</option>
+                            <option value="AK">Alaska (AK)</option>
+                            <option value="AZ">Arizona (AZ)</option>
+                            <option value="AR">Arkansas (AR)</option>
+                            <option value="CA">California (CA)</option>
+                            <option value="CO">Colorado (CO)</option>
+                            <option value="CT">Connecticut (CT)</option>
+                            <option value="DE">Delaware (DE)</option>
+                            <option value="DC">District of Columbia (DC)</option>
+                            <option value="FL">Florida (FL)</option>
+                            <option value="GA">Georgia (GA)</option>
+                            <option value="HI">Hawaii (HI)</option>
+                            <option value="ID">Idaho (ID)</option>
+                            <option value="IL">Illinois (IL)</option>
+                            <option value="IN">Indiana (IN)</option>
+                            <option value="IA">Iowa (IA)</option>
+                            <option value="KS">Kansas (KS)</option>
+                            <option value="KY">Kentucky (KY)</option>
+                            <option value="LA">Louisiana (LA)</option>
+                            <option value="ME">Maine (ME)</option>
+                            <option value="MD">Maryland (MD)</option>
+                            <option value="MA">Massachusetts (MA)</option>
+                            <option value="MI">Michigan (MI)</option>
+                            <option value="MN">Minnesota (MN)</option>
+                            <option value="MS">Mississippi (MS)</option>
+                            <option value="MO">Missouri (MO)</option>
+                            <option value="MT">Montana (MT)</option>
+                            <option value="NE">Nebraska (NE)</option>
+                            <option value="NV">Nevada (NV)</option>
+                            <option value="NH">New Hampshire (NH)</option>
+                            <option value="NJ">New Jersey (NJ)</option>
+                            <option value="NM">New Mexico (NM)</option>
+                            <option value="NY">New York (NY)</option>
+                            <option value="NC">North Carolina (NC)</option>
+                            <option value="ND">North Dakota (ND)</option>
+                            <option value="OH">Ohio (OH)</option>
+                            <option value="OK">Oklahoma (OK)</option>
+                            <option value="OR">Oregon (OR)</option>
+                            <option value="PA">Pennsylvania (PA)</option>
+                            <option value="RI">Rhode Island (RI)</option>
+                            <option value="SC">South Carolina (SC)</option>
+                            <option value="SD">South Dakota (SD)</option>
+                            <option value="TN">Tennessee (TN)</option>
+                            <option value="TX">Texas (TX)</option>
+                            <option value="UT">Utah (UT)</option>
+                            <option value="VT">Vermont (VT)</option>
+                            <option value="VA">Virginia (VA)</option>
+                            <option value="WA">Washington (WA)</option>
+                            <option value="WV">West Virginia (WV)</option>
+                            <option value="WI">Wisconsin (WI)</option>
+                            <option value="WY">Wyoming (WY)</option>
+                        </select>
+                    </div>
+
+                    <!-- Job Skill Category -->
+                    <div class="filter-group">
+                        <label for="filter-category">Skill / Job Role</label>
+                        <select id="filter-category" class="filter-control">
+                            <option value="">All Roles</option>
+                            <option value="Data Engineering">Data Engineering</option>
+                            <option value="Software Engineering">Software Engineering</option>
+                            <option value="Data Science">Data Science</option>
+                            <option value="Product Management">Product Management</option>
+                            <option value="UX Design">UX Design</option>
+                        </select>
+                    </div>
+
+                    <!-- Experience Level -->
+                    <div class="filter-group">
+                        <label for="filter-experience">Experience Level</label>
+                        <select id="filter-experience" class="filter-control">
+                            <option value="">All Levels</option>
+                            <option value="Entry">Entry-Level (0-2 Yrs)</option>
+                            <option value="Mid">Mid-Level (2-5 Yrs)</option>
+                            <option value="Senior">Senior-Level (5+ Yrs)</option>
+                            <option value="Lead">Lead / Principal (8+ Yrs)</option>
+                        </select>
+                    </div>
+
+                    <!-- Sponsor Grade Filter -->
+                    <div class="filter-group" style="margin-bottom: 1.5rem;">
+                        <label for="filter-grade">Sponsor Rating Grade</label>
+                        <select id="filter-grade" class="filter-control">
+                            <option value="">All Grades</option>
+                            <option value="A+">Grade A+ (Elite)</option>
+                            <option value="A">Grade A (High)</option>
+                            <option value="B">Grade B (Standard)</option>
+                            <option value="C">Grade C (Low)</option>
+                        </select>
+                    </div>
+
+                    <!-- Community Signup Form Card -->
+                    <div class="alerts-signup-box" style="border-top: 1px solid var(--card-border); padding-top: 1.5rem; margin-top: 1.5rem;">
+                        <h4 style="font-size: 1rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fa-solid fa-bell" style="color: var(--warning);"></i> Get Visa Job Alerts
+                        </h4>
+                        <p style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.4;">
+                            Join our community to get notified when companies in your target state file new LCA sponsorships.
+                        </p>
+                        <form id="signup-form">
+                            <div class="filter-group" style="margin-bottom: 0.75rem;">
+                                <input type="email" id="signup-email" placeholder="Enter your email" required class="filter-control" style="font-size: 0.8rem; padding: 0.6rem;">
+                            </div>
+                            <button type="submit" class="btn-primary" id="signup-submit-btn" style="width: 100%; padding: 0.6rem; font-size: 0.85rem; border-radius: 8px;">
+                                Subscribe Alerts
+                            </button>
+                        </form>
+                        <div id="signup-status" class="hidden" style="margin-top: 0.75rem; font-size: 0.75rem; padding: 0.5rem; border-radius: 6px; text-align: center; border: 1px solid transparent;"></div>
+                    </div>
+                </aside>
+
+                <!-- Primary Results Content -->
+                <div class="content-panel">
+                    
+                    <!-- Search Input & Verification Banner -->
+                    <div class="search-header-row">
+                        <div class="search-input-wrapper">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="search-employer" placeholder="Search by employer name (e.g. Google, Mutual of Omaha)...">
+                        </div>
+                    </div>
+
+                    <!-- Stat Summaries -->
+                    <div class="summary-strip">
+                        <div class="summary-card">
+                            <div class="summary-icon blue"><i class="fa-solid fa-building"></i></div>
+                            <div class="summary-details">
+                                <h4 id="stat-companies-count">0</h4>
+                                <span>Verified Employers</span>
+                            </div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-icon purple"><i class="fa-solid fa-percent"></i></div>
+                            <div class="summary-details">
+                                <h4 id="stat-avg-approval">0%</h4>
+                                <span>Average H-1B Approval</span>
+                            </div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-icon emerald"><i class="fa-solid fa-money-bill-wave"></i></div>
+                            <div class="summary-details">
+                                <h4 id="stat-median-salary">$0</h4>
+                                <span>Median Base Salary</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results List -->
+                    <div class="results-grid" id="employer-results">
+                        <!-- Dynamically filled by JS -->
+                    </div>
+                    
+                    <!-- Charts Analytics Section -->
+                    <div class="chart-container">
+                        <h3>Sponsorship Distribution & Salaries</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="salaryChart"></canvas>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 2: ELIGIBILITY CHECKER VIEW (QUIZ WIZARD) -->
+        <div id="checker-view" class="view-panel hidden">
+            <div class="wizard-box">
+                <div class="wizard-progress">
+                    <div class="wizard-progress-bar" id="wizard-progress-bar"></div>
+                </div>
+                
+                <div id="wizard-step-container">
+                    <!-- Dynamic content generated by JS -->
+                </div>
+                
+                <div class="text-center mt-4">
+                    <button class="btn-primary hidden" id="wizard-reset-btn">Restart Assessment</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 3: SAVED EMPLOYERS VIEW -->
+        <div id="saved-view" class="view-panel hidden">
+            <h2 class="text-center">Your Saved Employers & Bookmarks</h2>
+            <p class="text-center" style="color: var(--text-secondary); margin-bottom: 2rem;">Quickly monitor salaries, approval rates, and E-Verify status of employers you've saved.</p>
+            
+            <div class="results-grid" id="saved-employers-grid">
+                <!-- Dynamically filled by JS -->
+            </div>
+        </div>
+
+        <!-- VIEW 4: VISA PATH GUIDE VIEW -->
+        <div id="guide-view" class="view-panel hidden">
+            <h2 class="text-center" style="margin-bottom: 2rem;">US Employment Visas Explained</h2>
+            
+            <div class="guide-card">
+                <h3><i class="fa-solid fa-circle-info" style="color: var(--accent);"></i> H-1B Work Visa Pathway</h3>
+                <p style="margin: 0.75rem 0 1.5rem 0; line-height: 1.6; color: var(--text-secondary);">
+                    The H-1B is a specialty occupation visa for high-skilled professionals. To hire an H-1B worker, the company must file a Labor Condition Application (LCA) with the Department of Labor stating they will pay the prevailing wage. The H-1B is subject to an annual lottery capping selections at 85,000 cases.
+                </p>
+                <div class="guide-step">
+                    <strong>Step 1: Get a Job Offer</strong>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Receive an offer from an employer willing to file a petition on your behalf.</p>
+                </div>
+                <div class="guide-step">
+                    <strong>Step 2: Enter the H-1B Lottery</strong>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Employers register candidates in the online lottery in March.</p>
+                </div>
+                <div class="guide-step">
+                    <strong>Step 3: LCA and Form I-129 Filing</strong>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Once selected, the employer files a certified LCA and Form I-129 petition with USCIS before the deadline.</p>
+                </div>
+            </div>
+
+            <div class="guide-card">
+                <h3><i class="fa-solid fa-graduation-cap" style="color: var(--success);"></i> OPT & STEM OPT Student Visas</h3>
+                <p style="margin: 0.75rem 0 1.5rem 0; line-height: 1.6; color: var(--text-secondary);">
+                    F-1 students graduating from US universities are eligible for 12 months of Optional Practical Training (OPT). Students with qualifying Science, Technology, Engineering, or Math (STEM) degrees can extend their employment authorization for an additional 24 months (STEM OPT).
+                </p>
+                <div class="guide-step">
+                    <strong>Critical Prerequisite: E-Verify Registration</strong>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">To employ a graduate on a STEM OPT extension, the employer MUST be active in the USCIS E-Verify program. Use SponsorTrack's E-Verify badge to filter out companies that are not enrolled.</p>
+                </div>
+                <div class="guide-step">
+                    <strong>Reporting Compliance</strong>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Students must complete an Form I-983 Training Plan signed by their STEM OPT employer verifying oversight.</p>
+                </div>
+            </div>
+            
+            <div class="guide-card">
+                <h3><i class="fa-solid fa-passport" style="color: var(--warning);"></i> Direct Employment (US Citizen / Permanent Resident)</h3>
+                <p style="margin: 0.75rem 0 1.5rem 0; line-height: 1.6; color: var(--text-secondary);">
+                    Citizens, Permanent Residents (Green Card holders), and those with unrestricted work authorization (e.g., EAD cards) can work for any employer in the United States. Many major institutions that do not sponsor foreign nationals (e.g. government, defense contractors, small local businesses) are fully open to hiring US Citizens.
+                </p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Detailed Modal View -->
+    <div class="modal-overlay" id="employer-modal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div class="employer-identity">
+                    <h2 id="modal-company-name">Google LLC</h2>
+                    <div class="employer-meta">
+                        <span id="modal-company-industry">Technology</span>
+                        <span class="tag" id="modal-company-everify">E-Verify Enrolled</span>
+                    </div>
+                </div>
+                <button class="modal-close" id="modal-close-btn">&times;</button>
+            </div>
+
+            <div class="employer-stats">
+                <div class="stat-box">
+                    <div class="stat-label">Total LCA Volume</div>
+                    <div class="stat-value" id="modal-total-lca">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">LCA Approval Rate</div>
+                    <div class="stat-value" id="modal-approval-rate">0%</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Median LCA Base Pay</div>
+                    <div class="stat-value" id="modal-median-wage">$0</div>
+                </div>
+            </div>
+
+            <h3>State & Role Sponsorship Breakdown</h3>
+            <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.25rem;">Real filings parsed from official Department of Labor disclosure databases.</p>
+            
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>State</th>
+                            <th>Job Category</th>
+                            <th>Experience Level</th>
+                            <th>Approved Cases</th>
+                            <th>Average Wage</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modal-breakdown-rows">
+                        <!-- Dynamically filled by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Script -->
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
