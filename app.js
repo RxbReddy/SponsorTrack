@@ -5,8 +5,8 @@
 // Configure Backend API Target Base
 // Default empty string for relative paths in local testing or specify the production API URL when deployed
 const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    ? ''
-    : 'https://sponsortrack-api.onrender.com'; // Replace with public backend domain on deployment
+    ? 'http://127.0.0.1:8000'
+    : 'https://sponsortrack.onrender.com'; // Replace with public backend domain on deployment
 
 // Application State
 const state = {
